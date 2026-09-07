@@ -5,641 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>30 天情绪日记本</title>
   <style>
-    :root{
-      --bg:#f3eee7;
-      --paper:#fffdf9;
-      --ink:#1d1a17;
-      --muted:#6d665d;
-      --line:#e6dccd;
-      --shadow:0 18px 50px rgba(58,46,34,.11);
-      --mint:#dff2e7;
-      --sky:#e4f0ff;
-      --peach:#ffe8dd;
-      --butter:#fff4be;
-      --rose:#ffe1eb;
-      --lilac:#efe7ff;
-      --radius:16px;
-    }
+    :root{--bg:#f3eee6;--paper:#fffdf8;--ink:#24201c;--muted:#7b7066;--line:#e5dacb;--shadow:0 28px 80px rgba(54,42,30,.16)}
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      color:var(--ink);
-      background:
-        radial-gradient(circle at 10% 10%, rgba(255,232,221,.7), transparent 24%),
-        radial-gradient(circle at 86% 10%, rgba(228,240,255,.85), transparent 26%),
-        linear-gradient(180deg,#f8f3ed 0%, #f2ede5 100%);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-      letter-spacing:0;
-    }
-    a{color:inherit}
-    .wrap{max-width:1360px;margin:0 auto;padding:18px 14px 36px}
-    .hero,.bar,.panel,.card,.page,.sync-box{
-      background:rgba(255,253,249,.78);
-      backdrop-filter:blur(10px);
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:var(--shadow);
-    }
-    .hero{
-      border-radius:22px;
-      padding:18px;
-      display:grid;
-      grid-template-columns:1.35fr .95fr;
-      gap:16px;
-      align-items:end;
-    }
-    .eyebrow{font-size:12px;font-weight:800;color:var(--muted);display:flex;gap:8px;align-items:center}
-    .dot{width:10px;height:10px;border-radius:999px;background:#fff4be;box-shadow:14px 0 0 #e4f0ff,28px 0 0 #dff2e7}
-    h1{margin:10px 0 10px;font-size:42px;line-height:1.05;font-weight:950}
-    .lead{margin:0;max-width:58ch;color:var(--muted);font-size:16px;line-height:1.75}
-    .cover{
-      min-height:186px;border-radius:20px;padding:16px;position:relative;overflow:hidden;
-      background:
-        linear-gradient(160deg, rgba(255,255,255,.92), rgba(255,255,255,.72)),
-        repeating-linear-gradient(90deg, rgba(0,0,0,.03) 0 1px, transparent 1px 28px),
-        repeating-linear-gradient(180deg, rgba(0,0,0,.03) 0 1px, transparent 1px 28px);
-    }
-    .cover:before,.cover:after{content:"";position:absolute;border-radius:999px;opacity:.85}
-    .cover:before{width:108px;height:108px;right:18px;top:18px;background:radial-gradient(circle at 35% 35%, #fff 0 12px, #f2ba90 13px 43px, transparent 44px)}
-    .cover:after{width:146px;height:82px;left:18px;bottom:18px;background:linear-gradient(135deg, rgba(223,242,231,.95), rgba(228,240,255,.92));clip-path:polygon(0 25%, 18% 0, 100% 0, 100% 100%, 0 100%)}
-    .cover-card{
-      position:absolute;left:16px;right:16px;bottom:16px;z-index:1;
-      background:rgba(255,253,249,.92);border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:14px;
-    }
-    .cover-card strong{display:block;font-size:18px;line-height:1.35;margin-bottom:6px}
-    .cover-card span{display:block;color:var(--muted);font-size:13px;line-height:1.65}
-    .bar{
-      margin-top:14px;border-radius:18px;padding:14px 16px;
-      display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
-    }
-    .actions{display:flex;flex-wrap:wrap;gap:8px}
-    .btn{
-      appearance:none;border:1px solid rgba(0,0,0,.08);background:#fff;color:var(--ink);
-      height:38px;padding:0 14px;border-radius:999px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;
-    }
-    .btn.primary{background:#171717;color:#fff;border-color:#171717}
-    .btn.soft{background:linear-gradient(180deg,#fff,#fbf7f1)}
-    .btn:hover,.daychip:hover,.emotion:hover{transform:translateY(-1px)}
-    .status{color:var(--muted);font-size:13px;line-height:1.5;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .status strong{color:var(--ink);font-size:14px}
-    .layout{margin-top:14px;display:grid;grid-template-columns:1fr 320px;gap:14px;align-items:start}
-    .panel{border-radius:20px;overflow:hidden}
-    .head{padding:16px 18px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.3))}
-    .head h2{margin:0 0 6px;font-size:20px;line-height:1.25;font-weight:900}
-    .head p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
-    .days{padding:14px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
-    .daychip,.emotion{
-      border:1px solid rgba(0,0,0,.08);background:linear-gradient(180deg,#fff,#fcf8f2);border-radius:14px;cursor:pointer;font:inherit;text-align:left
-    }
-    .daychip{min-height:52px;padding:10px 8px;display:flex;flex-direction:column;justify-content:center;gap:2px}
-    .daychip .small{font-size:11px;color:var(--muted);font-weight:700}
-    .daychip .big{font-size:14px;font-weight:900}
-    .daychip.active{background:#171717;color:#fff;border-color:#171717}
-    .daychip.active .small{color:rgba(255,255,255,.72)}
-    .pages{display:grid;gap:14px;padding:14px}
-    .page{
-      position:relative;overflow:hidden;border-radius:18px;background:var(--paper);border:1px solid var(--line);
-      padding:16px;box-shadow:0 10px 25px rgba(68,54,39,.05)
-    }
-    .page:before{
-      content:"";position:absolute;inset:0;pointer-events:none;opacity:.24;
-      background:
-        linear-gradient(180deg, transparent 0 36px, rgba(0,0,0,.03) 36px 37px, transparent 37px),
-        repeating-linear-gradient(180deg, rgba(0,0,0,.025) 0 1px, transparent 1px 28px);
-    }
-    .page-inner{position:relative;z-index:1;display:grid;gap:14px}
-    .page-top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
-    .tag{display:inline-flex;align-items:center;justify-content:center;min-width:74px;height:34px;padding:0 12px;border-radius:999px;background:#171717;color:#fff;font-size:13px;font-weight:900}
-    .page h3{margin:0;font-size:24px;line-height:1.25;font-weight:950}
-    .sub{margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.65}
-    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}
-    .block{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
-    .block.mint{background:linear-gradient(180deg, rgba(223,242,231,.62), rgba(255,255,255,.95))}
-    .block.sky{background:linear-gradient(180deg, rgba(228,240,255,.56), rgba(255,255,255,.95))}
-    .block.peach{background:linear-gradient(180deg, rgba(255,232,221,.58), rgba(255,255,255,.95))}
-    .block.rose{background:linear-gradient(180deg, rgba(255,225,235,.68), rgba(255,255,255,.95))}
-    .block.butter{background:linear-gradient(180deg, rgba(255,244,190,.68), rgba(255,255,255,.95))}
-    .label{display:block;margin-bottom:8px;font-size:12px;font-weight:900;color:var(--muted);text-transform:uppercase}
-    textarea{
-      width:100%;border:0;outline:0;resize:vertical;background:transparent;color:var(--ink);
-      font:inherit;font-size:15px;line-height:1.7;min-height:92px
-    }
-    textarea::placeholder{color:#9a8f83}
-    .short{min-height:56px}
-    .mini{display:grid;gap:10px;grid-template-columns:1fr 1fr 1fr}
-    .mini .panelx{padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
-    .panelx strong{display:block;margin-bottom:6px;font-size:12px;color:var(--muted);text-transform:uppercase}
-    .checks{display:grid;gap:8px}
-    .check{display:flex;gap:10px;align-items:flex-start;padding:10px 10px 10px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.8)}
-    .check input{width:18px;height:18px;margin-top:2px;accent-color:#171717}
-    .check span{font-size:14px;line-height:1.55}
-    .sidebar{display:grid;gap:14px;position:sticky;top:14px}
-    .emotion-grid{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .emotion{
-      min-height:104px;padding:12px;border-radius:16px;display:grid;gap:8px;align-content:start
-    }
-    .emotion .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
-    .swatch{width:14px;height:14px;border-radius:999px;flex:0 0 auto;box-shadow:0 0 0 4px rgba(0,0,0,.03)}
-    .emotion strong{font-size:15px;line-height:1.25}
-    .emotion small{display:block;color:var(--muted);font-size:12px;line-height:1.55}
-    .emotion.active{border-color:#171717;box-shadow:0 10px 22px rgba(24,20,17,.12);transform:translateY(-1px)}
-    .mood{padding:16px}
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#171717;color:#fff;font-size:13px;font-weight:900;margin-bottom:10px}
-    .mood p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
-    .current{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:grid;gap:8px}
-    .current strong{font-size:18px;line-height:1.25}
-    .current span{color:var(--muted);font-size:13px;line-height:1.6}
-    .sync-box{border-radius:20px;padding:14px}
-    .sync-box h3{margin:0 0 8px;font-size:18px;line-height:1.25;font-weight:900}
-    .sync-box p{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.65}
-    .sync-row{display:grid;gap:10px}
-    .sync-row textarea{min-height:110px;border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
-    .file{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .file input{max-width:100%}
-    .tip{padding:12px;border-radius:14px;border:1px dashed var(--line-strong);background:rgba(255,255,255,.65);color:var(--muted);font-size:13px;line-height:1.7}
-    .float{position:fixed;right:16px;bottom:16px;z-index:20;padding:12px 14px;border-radius:999px;background:#171717;color:#fff;text-decoration:none;font-size:13px;font-weight:900;box-shadow:0 16px 30px rgba(23,23,23,.22)}
-    @media (max-width:1080px){.layout{grid-template-columns:1fr}.sidebar{position:static}}
-    @media (max-width:860px){.hero,.bar,.grid,.mini{grid-template-columns:1fr}.days{grid-template-columns:repeat(4,minmax(0,1fr))}h1{font-size:34px}.page h3{font-size:22px}}
-    @media (max-width:560px){.wrap{padding:12px 10px 24px}.days{grid-template-columns:repeat(3,minmax(0,1fr));padding:12px}.emotion-grid{grid-template-columns:1fr}.page{padding:12px}.page-top{grid-template-columns:1fr}.btn{height:36px;padding:0 12px}.bar,.hero{padding:12px}}
+    body{margin:0;color:var(--ink);background:radial-gradient(circle at 18% 12%,rgba(255,231,218,.9),transparent 24%),radial-gradient(circle at 82% 10%,rgba(221,239,255,.9),transparent 25%),linear-gradient(180deg,#f8f4ed 0%,#eee6dc 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:0;min-height:100vh}
+    button,input,textarea,select{font:inherit;letter-spacing:0}
+    .app{max-width:1180px;margin:0 auto;padding:18px 14px 32px}
+    .top{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 4px 16px}
+    .brand h1{margin:0;font-size:24px;line-height:1.15;font-weight:950}.brand p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+    .tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn,.select{height:38px;border-radius:999px;border:1px solid rgba(0,0,0,.1);background:#fff;color:var(--ink);padding:0 14px;font-weight:800;font-size:14px;box-shadow:0 8px 20px rgba(54,42,30,.06)}
+    .btn{cursor:pointer}.btn.dark{background:#1f1b18;color:#fff;border-color:#1f1b18}
+    .book-wrap{perspective:1800px}.book{min-height:690px;display:grid;grid-template-columns:1fr 1fr;border-radius:20px;overflow:hidden;background:#d8cbb9;box-shadow:var(--shadow);position:relative}
+    .book:before{content:"";position:absolute;top:0;bottom:0;left:50%;width:28px;z-index:4;transform:translateX(-50%);background:linear-gradient(90deg,rgba(0,0,0,.14),rgba(255,255,255,.55),rgba(0,0,0,.09));opacity:.45;pointer-events:none}
+    .page{min-height:690px;background:linear-gradient(90deg,rgba(0,0,0,.04),transparent 10%,transparent 90%,rgba(0,0,0,.035)),var(--paper);padding:30px;position:relative;overflow:hidden}
+    .page.left{border-right:1px solid rgba(0,0,0,.08)}.page.right{border-left:1px solid rgba(255,255,255,.7)}
+    .page-no{position:absolute;top:16px;right:20px;color:#a09284;font-size:12px;font-weight:800}.left .page-no{left:20px;right:auto}
+    .emotion-picture{height:100%;min-height:620px;border-radius:16px;display:grid;place-items:center;padding:28px;position:relative;overflow:hidden;background:var(--mood);box-shadow:inset 0 0 0 1px rgba(0,0,0,.07)}
+    .emotion-picture:before{content:"";position:absolute;inset:26px;border-radius:14px;border:1px solid rgba(255,255,255,.62)}.emotion-picture:after{content:"";position:absolute;width:220px;height:220px;right:-80px;top:-70px;background:rgba(255,255,255,.35);border-radius:50%}
+    .poster{width:min(420px,100%);aspect-ratio:3/4;border-radius:18px;background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.7);display:grid;grid-template-rows:auto 1fr auto;padding:22px;position:relative;z-index:1;box-shadow:0 18px 55px rgba(36,32,28,.14)}
+    .poster-top{display:flex;justify-content:space-between;align-items:center;color:rgba(36,32,28,.72);font-size:13px;font-weight:900}.swatch{width:30px;height:30px;border-radius:50%;background:var(--dot);box-shadow:0 0 0 7px rgba(255,255,255,.4)}
+    .face{align-self:center;justify-self:center;width:210px;height:210px;border-radius:45% 45% 48% 48%;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.62));position:relative;box-shadow:0 18px 35px rgba(54,42,30,.1)}
+    .face:before,.face:after{content:"";position:absolute;top:82px;width:18px;height:18px;border-radius:50%;background:#28231f;box-shadow:0 5px 0 rgba(255,255,255,.24) inset}.face:before{left:62px}.face:after{right:62px}
+    .mouth{position:absolute;left:50%;top:118px;width:62px;height:28px;transform:translateX(-50%);border-bottom:5px solid #28231f;border-radius:0 0 70px 70px}.cheek{position:absolute;top:112px;width:28px;height:14px;border-radius:999px;background:rgba(255,139,139,.35)}.cheek.l{left:34px}.cheek.r{right:34px}
+    .spark{position:absolute;border-radius:999px;background:rgba(255,255,255,.55)}.spark.one{width:16px;height:16px;left:42px;top:64px}.spark.two{width:9px;height:9px;right:42px;bottom:58px}.spark.three{width:12px;height:12px;left:56px;bottom:92px}
+    .emotion-name{margin:0;text-align:center;font-size:44px;line-height:1.05;font-weight:950}.emotion-desc{margin:10px auto 0;max-width:18em;text-align:center;color:rgba(36,32,28,.72);font-size:15px;line-height:1.7}
+    .form-head{padding:8px 4px 14px;border-bottom:1px solid var(--line)}.form-head .day{font-size:13px;font-weight:900;color:var(--muted)}.form-head h2{margin:8px 0 6px;font-size:28px;line-height:1.18;font-weight:950}.form-head p{margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+    .fields{display:grid;gap:12px;margin-top:16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{border:1px solid var(--line);background:rgba(255,255,255,.62);border-radius:12px;padding:12px}
+    .field label,.check-title{display:block;margin-bottom:8px;color:var(--muted);font-size:12px;font-weight:900}textarea{width:100%;min-height:78px;resize:vertical;border:0;outline:0;background:transparent;color:var(--ink);font-size:15px;line-height:1.7}textarea.big{min-height:120px}textarea::placeholder{color:#a39587}
+    .checks{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.58);padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}.check{display:flex;gap:8px;align-items:flex-start;color:#433b34;font-size:14px;line-height:1.45}.check input{width:17px;height:17px;margin-top:2px;accent-color:#1f1b18;flex:0 0 auto}
+    .bottom{margin-top:14px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;color:var(--muted);font-size:13px}.progress{height:8px;border-radius:999px;background:rgba(0,0,0,.07);overflow:hidden}.progress span{display:block;height:100%;width:var(--progress);background:#1f1b18;border-radius:999px}
+    .sync{margin-top:14px;display:none;border:1px solid rgba(0,0,0,.08);border-radius:16px;background:rgba(255,253,248,.82);padding:14px;box-shadow:0 12px 32px rgba(54,42,30,.08)}.sync.open{display:grid;gap:10px}.sync p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}.sync textarea{min-height:92px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px;font-size:13px}.sync-actions{display:flex;gap:8px;flex-wrap:wrap}
+    @media (max-width:900px){.top{align-items:flex-start;flex-direction:column}.tools{justify-content:flex-start}.book{grid-template-columns:1fr;min-height:0}.book:before{display:none}.page,.emotion-picture{min-height:auto}.emotion-picture{min-height:520px}.page.left{border-right:0;border-bottom:1px solid var(--line)}.page.right{border-left:0}}
+    @media (max-width:560px){.app{padding:12px 10px 24px}.page{padding:18px}.poster{padding:18px}.face{width:170px;height:170px}.face:before,.face:after{top:68px}.face:before{left:50px}.face:after{right:50px}.mouth{top:98px}.emotion-name{font-size:36px}.grid,.checks,.bottom{grid-template-columns:1fr}.btn,.select{height:36px;padding:0 12px}}
   </style>
 </head>
-<body id="top">
-  <main class="wrap">
-    <section class="hero">
-      <div>
-        <div class="eyebrow"><span class="dot"></span><span id="eyebrow"></span></div>
-        <h1 id="title"></h1>
-        <p class="lead" id="lead"></p>
-      </div>
-      <div class="cover">
-        <div class="cover-card">
-          <strong id="coverTitle"></strong>
-          <span id="coverDesc"></span>
-        </div>
-      </div>
-    </section>
-
-    <section class="bar">
-      <div class="actions">
-        <button class="btn primary" id="prevBtn" type="button"></button>
-        <button class="btn primary" id="nextBtn" type="button"></button>
-        <button class="btn soft" id="todayBtn" type="button"></button>
-        <button class="btn soft" id="copySyncBtn" type="button"></button>
-        <button class="btn soft" id="loadSyncBtn" type="button"></button>
-        <button class="btn soft" id="exportBtn" type="button"></button>
-        <button class="btn soft" id="importBtn" type="button"></button>
-      </div>
-      <div class="status">
-        <span id="statusLeft"></span><strong id="statusDay"></strong><span id="statusRight"></span>
-      </div>
-    </section>
-
-    <section class="layout">
-      <section class="panel">
-        <div class="head">
-          <h2 id="pagesTitle"></h2>
-          <p id="pagesDesc"></p>
-        </div>
-        <div class="days" id="dayNav"></div>
-        <div class="pages" id="pages"></div>
-      </section>
-
-      <aside class="sidebar">
-        <section class="panel">
-          <div class="head">
-            <h2 id="emotionTitle"></h2>
-            <p id="emotionDesc"></p>
-          </div>
-          <div class="emotion-grid" id="emotionGrid"></div>
-        </section>
-
-        <section class="panel mood">
-          <div class="pill" id="moodPill"></div>
-          <p id="moodText"></p>
-          <div class="current">
-            <strong id="currentTitle"></strong>
-            <span id="currentHint"></span>
-          </div>
-        </section>
-
-        <section class="sync-box">
-          <h3 id="syncTitle"></h3>
-          <p id="syncDesc"></p>
-          <div class="sync-row">
-            <textarea id="syncCode" spellcheck="false" placeholder=""></textarea>
-            <div class="file">
-              <input id="fileInput" type="file" accept="application/json">
-            </div>
-            <div class="tip" id="syncTip"></div>
-          </div>
-        </section>
-      </aside>
-    </section>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand"><h1>30 天情绪日记本</h1><p>像翻开一本真实的小本子：左页看见情绪，右页慢慢记录。</p></div>
+      <div class="tools"><button class="btn dark" id="prevBtn" type="button">上一天</button><select class="select" id="daySelect" aria-label="选择天数"></select><button class="btn dark" id="nextBtn" type="button">下一天</button><button class="btn" id="syncToggle" type="button">同步/备份</button></div>
+    </header>
+    <section class="book-wrap"><div class="book" id="book">
+      <section class="page left"><span class="page-no" id="leftPageNo"></span><div class="emotion-picture" id="emotionPicture"><article class="poster"><div class="poster-top"><span id="posterDay"></span><span class="swatch" id="swatch"></span></div><div class="face" id="face"><span class="mouth"></span><span class="cheek l"></span><span class="cheek r"></span><span class="spark one"></span><span class="spark two"></span><span class="spark three"></span></div><div><h2 class="emotion-name" id="emotionName"></h2><p class="emotion-desc" id="emotionDesc"></p></div></article></div></section>
+      <section class="page right"><span class="page-no" id="rightPageNo"></span><div class="form-head"><div class="day" id="formDay"></div><h2 id="formTitle"></h2><p id="formPrompt"></p></div><div class="fields" id="fields"></div><div class="bottom"><div class="progress" aria-label="进度"><span id="progressBar"></span></div><span id="saveState">已自动保存</span></div></section>
+    </div></section>
+    <section class="sync" id="syncPanel"><p>换手机或换电脑时，先在旧设备点“生成同步码”，复制到新设备后点“读取同步码”。也可以导出 JSON 文件备份。</p><textarea id="syncCode" placeholder="同步码会出现在这里，也可以把同步码粘贴到这里。"></textarea><div class="sync-actions"><button class="btn dark" id="makeCode" type="button">生成同步码</button><button class="btn" id="readCode" type="button">读取同步码</button><button class="btn" id="exportJson" type="button">导出 JSON</button><button class="btn" id="importJson" type="button">导入 JSON</button><input id="fileInput" type="file" accept="application/json" hidden></div></section>
   </main>
-
-  <a class="float" href="#top" id="backTop"></a>
-
   <script>
-    const T = {
-      appTitle: "\u0033\u0030\u0020\u5929\u60c5\u7eea\u65e5\u8bb0\u672c",
-      eyebrow: "\u53ef\u4ee5\u7f13\u7f13\u5199\uff0c\u4e5f\u53ef\u4ee5\u5199\u5f88\u591a",
-      title: "\u628a\u5fc3\u60c5\u5199\u8f7b\u4e00\u70b9",
-      lead: "\u8fd9\u662f\u4e00\u4e2a\u53ef\u4ee5\u5728\u7f51\u9875\u91cc\u8bb0\u5f55\u7684 30 \u5929\u60c5\u7eea\u65e5\u8bb0\u672c\u3002\u4f60\u53ef\u4ee5\u5148\u9009\u4e00\u5f20\u53ef\u7231\u7684\u60c5\u7eea\u5361\u7247\uff0c\u518d\u8fdb\u5165\u5f53\u5929\u9875\u9762\uff0c\u628a\u611f\u53d7\u3001\u8eab\u4f53\u53cd\u5e94\u3001\u60f3\u6cd5\u548c\u4e00\u4e2a\u5c0f\u5c0f\u7684\u660e\u5929\u8ba1\u5212\u6162\u6162\u5199\u4e0b\u6765\u3002",
-      coverTitle: "\u4eca\u5929\u9002\u5408\u5199\u4e00\u70b9\u70b9\uff0c\u4e5f\u53ef\u4ee5\u5199\u5f88\u591a\u3002",
-      coverDesc: "\u5de6\u8fb9\u662f 30 \u5929\u9875\u9762\uff0c\u53f3\u8fb9\u662f\u60c5\u7eea\u5361\u7247\u548c\u540c\u6b65\u4fdd\u5b58\u3002\u5982\u679c\u4f60\u6362\u8bbe\u5907\uff0c\u53ef\u4ee5\u76f4\u63a5\u7528\u5bfc\u51fa\u7684\u540c\u6b65\u7801\u6216 JSON \u5907\u4efd\u7ee7\u7eed\u8bb0\u3002",
-      prev: "\u4e0a\u4e00\u9875",
-      next: "\u4e0b\u4e00\u9875",
-      today: "\u56de\u5230\u7b2c 1 \u5929",
-      copySync: "\u590d\u5236\u540c\u6b65\u7801",
-      loadSync: "\u8bfb\u53d6\u540c\u6b65\u7801",
-      export: "\u5bfc\u51fa\u5907\u4efd",
-      import: "\u5bfc\u5165\u5907\u4efd",
-      statusLeft: "\u5f53\u524d\u9875",
-      statusRight: "\u00b7 \u81ea\u52a8\u4fdd\u5b58",
-      pagesTitle: "\u0033\u0030 \u5929\u65e5\u8bb0\u9875",
-      pagesDesc: "\u6bcf\u4e00\u9875\u90fd\u7559\u4e86\u7a7a\u767d\u3002\u4f60\u53ef\u4ee5\u53ea\u5199\u4e00\u53e5\uff0c\u4e5f\u53ef\u4ee5\u628a\u8fd9\u4e00\u5929\u7684\u6765\u9f99\u53bb\u8109\u90fd\u6490\u5f00\u6765\u5199\u3002",
-      emotionTitle: "\u53ef\u7231\u60c5\u7eea\u5361\u7247",
-      emotionDesc: "\u5148\u70b9\u4e00\u5f20\u6700\u50cf\u4eca\u5929\u7684\uff0c\u518d\u53bb\u5199\u3002\u8fd9\u91cc\u4e00\u5171\u6709 24 \u5f20\uff0c\u5c3d\u91cf\u628a\u5e38\u89c1\u548c\u7ec6\u5c0f\u7684\u5fc3\u60c5\u90fd\u6536\u8fdb\u6765\u3002",
-      moodPrefix: "\u5df2\u9009\u60c5\u7eea\uff1a",
-      currentHintPrefix: "\u8fd9\u4e00\u9875\u7684\u63d0\u793a\uff1a",
-      syncTitle: "\u8de8\u8bbe\u5907\u540c\u6b65",
-      syncDesc: "\u628a\u540c\u6b65\u7801\u590d\u5236\u5230\u53e6\u4e00\u53f0\u8bbe\u5907\uff0c\u6216\u8005\u76f4\u63a5\u4e0b\u8f7d JSON \u5907\u4efd\u518d\u5bfc\u5165\uff0c\u5c31\u80fd\u7ee7\u7eed\u4e0a\u4e00\u53f0\u8bbe\u5907\u7684\u5185\u5bb9\u3002",
-      syncPlaceholder: "\u8fd9\u91cc\u4f1a\u81ea\u52a8\u663e\u793a\u53ef\u4ee5\u590d\u5236\u7684\u540c\u6b65\u7801\uff0c\u4e5f\u53ef\u4ee5\u624b\u52a8\u7c98\u8d34\u590d\u4e8e\u8fdb\u884c\u5bfc\u5165\u3002",
-      syncTip: "\u63d0\u9192\uff1a\u5982\u679c\u4f60\u60f3\u8981\u201c\u771f\u6b63\u7684\u4e91\u7aef\u81ea\u52a8\u540c\u6b65\u201d\uff0c\u6211\u4e5f\u53ef\u4ee5\u7ee7\u7eed\u7ed9\u4f60\u63a5\u4e00\u4e2a\u540e\u7aef\u3002\u8fd9\u7248\u5148\u628a\u8de8\u8bbe\u5907\u8bb0\u5f55\u505a\u5b9e\u3002",
-      backTop: "\u56de\u5230\u9876\u90e8"
-    };
-
-    const DAYS = [
-      ["\u8f7b\u8f7b\u5f00\u59cb","\u4eca\u5929\u6700\u5bb9\u6613\u88ab\u5ffd\u7565\u7684\u5c0f\u611f\u53d7\u662f\u4ec0\u4e48\uff1f","mint"],
-      ["\u6162\u6162\u5b89\u987f","\u6709\u54ea\u4e9b\u4e8b\u8ba9\u4f60\u89c9\u5f97\u4e16\u754c\u7a0d\u5fae\u7a33\u4e86\u4e00\u70b9\uff1f","sky"],
-      ["\u6709\u70b9\u5fd9\uff0c\u4f46\u8fd8\u597d","\u4eca\u5929\u6700\u8017\u7535\u7684\u65f6\u523b\u51fa\u73b0\u5728\u54ea\u513f\uff1f","butter"],
-      ["\u5fc3\u91cc\u6709\u98ce","\u54ea\u4e00\u4ef6\u5c0f\u4e8b\u8ba9\u4f60\u7a81\u7136\u76b1\u4e86\u4e00\u4e0b\u7709\uff1f","rose"],
-      ["\u67d4\u8f6f\u89c2\u5bdf","\u5982\u679c\u628a\u4eca\u5929\u62cd\u6210\u4e00\u5f20\u7167\u7247\uff0c\u4f60\u4f1a\u62cd\u4ec0\u4e48\uff1f","lilac"],
-      ["\u91cd\u65b0\u547c\u5438","\u4eca\u5929\u6709\u6ca1\u6709\u4e00\u53e3\u6c14\uff0c\u7ec8\u4e8e\u653e\u677e\u4e0b\u6765\uff1f","mint"],
-      ["\u5c0f\u5c0f\u56de\u6696","\u662f\u4ec0\u4e48\u8ba9\u4f60\u6062\u590d\u4e86\u4e00\u70b9\u70b9\u529b\u6c14\uff1f","peach"],
-      ["\u4eca\u5929\u4e5f\u7b97\u6570","\u54ea\u4e9b\u52aa\u529b\u6ca1\u6709\u88ab\u522b\u4eba\u770b\u5230\uff0c\u4f46\u4f60\u81ea\u5df1\u77e5\u9053\uff1f","sky"],
-      ["\u4e0d\u5fc5\u5b8c\u7f8e","\u4eca\u5929\u54ea\u4ef6\u4e8b\u4f60\u5df2\u7ecf\u5c3d\u529b\u4e86\uff1f","butter"],
-      ["\u5b89\u9759\u8fc7\u534a","\u4eca\u5929\u7684\u5b89\u9759\uff0c\u662f\u8212\u670d\u7684\uff0c\u8fd8\u662f\u7a7a\u7684\uff1f","mint"],
-      ["\u5fc3\u91cc\u4eae\u4e86\u4e00\u4e0b","\u662f\u4ec0\u4e48\u8ba9\u4f60\u5fd8\u4e0d\u4e86\u5730\u7b11\u4e86\u4e00\u79d2\uff1f","rose"],
-      ["\u6162\u4e00\u70b9\u4e5f\u884c","\u5982\u679c\u4eca\u5929\u5c11\u505a\u4e00\u4ef6\u4e8b\uff0c\u4f60\u6700\u60f3\u5c11\u505a\u4ec0\u4e48\uff1f","lilac"],
-      ["\u88ab\u7167\u987e\u7684\u77ac\u95f4","\u4eca\u5929\u6709\u6ca1\u6709\u54ea\u4e2a\u77ac\u95f4\u50cf\u88ab\u8f7b\u8f7b\u63a5\u4f4f\uff1f","peach"],
-      ["\u4e00\u70b9\u70b9\u4e71","\u4e71\u7684\u662f\u4e8b\u60c5\uff0c\u8fd8\u662f\u5fc3\uff1f","sky"],
-      ["\u7ed9\u81ea\u5df1\u7559\u8def","\u660e\u5929\u4f60\u60f3\u7ed9\u81ea\u5df1\u7559\u51fa\u54ea\u4e00\u5c0f\u6bb5\u4f59\u5730\uff1f","mint"],
-      ["\u6709\u70b9\u60f3\u903e","\u4eca\u5929\u4f60\u6700\u60f3\u907f\u5f00\u7684\u662f\u4ec0\u4e48\uff1f","rose"],
-      ["\u91cd\u65b0\u6574\u7406","\u5982\u679c\u628a\u4eca\u5929\u5206\u6210\u4e09\u5757\uff0c\u4f60\u4f1a\u600e\u4e48\u5206\uff1f","butter"],
-      ["\u8f7b\u67d4\u575a\u5b9a","\u4eca\u5929\u4f60\u505a\u6210\u4e86\u54ea\u4e00\u4ef6\u9700\u8981\u52c7\u6c14\u7684\u4e8b\uff1f","sky"],
-      ["\u77ed\u6682\u6674\u5929","\u4eca\u5929\u6700\u50cf\u6674\u5929\u7684 1 \u5206\u949f\u5728\u54ea\u91cc\uff1f","mint"],
-      ["\u7559\u767d\u65e5","\u4f60\u60f3\u628a\u54ea\u4e00\u6bb5\u7a7a\u767d\u7559\u7ed9\u8c01\u6216\u4ec0\u4e48\uff1f","lilac"],
-      ["\u5fc3\u4e8b\u6709\u70b9\u91cd","\u6700\u91cd\u7684\u90a3\u90e8\u5206\uff0c\u540d\u5b57\u53eb\u4ec0\u4e48\uff1f","rose"],
-      ["\u6162\u6162\u597d\u8f6c","\u662f\u4ec0\u4e48\u8ba9\u4eca\u5929\u6bd4\u6628\u5929\u66f4\u597d\u4e00\u70b9\uff1f","peach"],
-      ["\u4ecd\u7136\u8ba4\u771f","\u5373\u4f7f\u4e0d\u8f7b\u677e\uff0c\u4f60\u4eca\u5929\u8fd8\u662f\u505a\u4e86\u4ec0\u4e48\uff1f","sky"],
-      ["\u6e29\u67d4\u6536\u5c3e","\u4eca\u5929\u6700\u540e\u4e00\u4e2a\u60f3\u4fdd\u7559\u7684\u753b\u9762\u662f\u4ec0\u4e48\uff1f","butter"],
-      ["\u5b89\u5b89\u9759\u9759\u7684\u597d","\u4eca\u5929\u6709\u6ca1\u6709\u4e00\u4e2a\u4e0d\u542f\u95f9\u5374\u5f88\u73cd\u8d35\u7684\u77ac\u95f4\uff1f","mint"],
-      ["\u60f3\u88ab\u7406\u89e3","\u5982\u679c\u6709\u4eba\u5b8c\u5168\u7406\u89e3\u4f60\uff0c\u4f60\u6700\u60f3\u88ab\u7406\u89e3\u54ea\u4e00\u70b9\uff1f","rose"],
-      ["\u6574\u7406\u60c5\u7eea","\u54ea\u4e9b\u611f\u53d7\u9700\u8981\u6392\u961f\uff0c\u54ea\u4e9b\u53ef\u4ee5\u5148\u653e\u4e0b\uff1f","lilac"],
-      ["\u56de\u5230\u81ea\u5df1","\u4eca\u5929\u6709\u6ca1\u6709\u4e00\u523b\uff0c\u4f60\u7a81\u7136\u50cf\u56de\u5230\u4e86\u81ea\u5df1\uff1f","peach"],
-      ["\u6b63\u5728\u8def\u4e0a","\u4f60\u73b0\u5728\u6700\u60f3\u5f80\u54ea\u4e2a\u65b9\u5411\u518d\u8d70\u4e00\u6b65\uff1f","sky"],
-      ["\u6e29\u67d4\u7ed3\u5c3e","\u0033\u0030 \u5929\u7ed3\u675f\u524d\uff0c\u4f60\u60f3\u5bf9\u81ea\u5df1\u8bf4\u4ec0\u4e48\uff1f","mint"]
+    const days=[
+      ["轻轻开始","软乎乎","像刚晒过太阳的被子，想把自己安放好。","#ffdfe8","#f06f8f","今天最容易被忽略的小感受是什么？"],["慢慢安顿","平静","风停了一下，心也跟着慢下来。","#e4f0ff","#6ba6ff","有哪些事让你觉得世界稍微稳了一点？"],["有点忙，但还好","疲惫","电量偏低，想把动作都放慢。","#e8f7d9","#72b36a","今天最耗电的时刻出现在哪儿？"],["心里有风","烦躁","像桌面上的小东西突然都挤在一起。","#ffe8dd","#f28c68","哪一件小事让你突然皱了一下眉？"],["柔软观察","好奇","脑袋探出一点点，想看看前面是什么。","#efe7ff","#9b7be8","如果把今天拍成一张照片，你会拍什么？"],["重新呼吸","释然","终于不再拧巴，呼吸顺了些。","#dff2e7","#5aa879","今天有没有一口气终于放松下来？"],
+      ["小小回暖","期待","还没发生，但心里已经开始亮了。","#fff4be","#e5b739","是什么让你恢复了一点点力气？"],["今天也算数","骄傲","有一件事，你真的做到了。","#ffe5b8","#d98a2b","哪些努力没有被别人看到，但你自己知道？"],["不必完美","松一口气","事情没那么可怕时，身体会先知道。","#dff2e7","#3d9c75","今天哪件事你已经尽力了？"],["安静过半","安稳","不是很激动，但很适合待着。","#e4f0ff","#5a95d8","今天的安静，是舒服的，还是空的？"],["心里亮了一下","开心泡泡","轻轻往上冒的快乐，通常很简单。","#fff4be","#f0bd2d","是什么让你忍不住笑了一秒？"],["慢一点也行","想躺平","不是放弃，是想先休息一下。","#efe7ff","#8b78cf","如果今天少做一件事，你最想少做什么？"],
+      ["被照顾的瞬间","感动","被某句话或某个细节轻轻碰到。","#ffe1eb","#e66f98","今天有没有哪个瞬间像被轻轻接住？"],["一点点乱","焦虑","脑子跑得比身体快，停不下来。","#fff0cd","#d4a536","乱的是事情，还是心？"],["给自己留路","温柔","适合轻声说话，也轻声对待自己。","#ffe8dd","#e89373","明天你想给自己留出哪一小段余地？"],["有点想躲","害羞","脸颊先热起来，话还在后面。","#ffdfe8","#ef7897","今天你最想避开的是什么？"],["重新整理","满足","事情不一定大，但刚好对上了。","#fff4be","#ddb439","如果把今天分成三块，你会怎么分？"],["轻柔坚定","被看见","有人注意到了你真实的样子。","#e4f0ff","#5d9ce3","今天你做成了哪一件需要勇气的事？"],
+      ["短暂晴天","开心泡泡","快乐不必很大，一秒也可以被收藏。","#fff4be","#f0b92e","今天最像晴天的 1 分钟在哪里？"],["留白日","空空的","不是坏，只是暂时没那么多颜色。","#e8eef6","#88a4bd","你想把哪一段空白留给谁或什么？"],["心事有点重","难过","今天可能有点沉，但它仍然值得被写下。","#efe7ff","#8a75d6","最重的那部分，名字叫什么？"],["慢慢好转","释然","一点点松开，也是一种前进。","#dff2e7","#58a675","是什么让今天比昨天更好一点？"],["仍然认真","疲惫","累也没有抹掉你的认真。","#e4f0ff","#6e9ed8","即使不轻松，你今天还是做了什么？"],["温柔收尾","满足","今天也有可以收进口袋的小确幸。","#ffe8dd","#df8b6c","今天最后一个想保留的画面是什么？"],
+      ["安安静静的好","平静","不吵闹，也可以很珍贵。","#dff2e7","#5aa879","今天有没有一个不吵闹却很珍贵的瞬间？"],["想被理解","委屈","不是大风暴，但心里有一点酸。","#ffe1eb","#e66f98","如果有人完全理解你，你最想被理解哪一点？"],["整理情绪","好奇","把感受排一排，看它们各自想说什么。","#efe7ff","#9b7be8","哪些感受需要排队，哪些可以先放下？"],["回到自己","安稳","像慢慢回到自己的房间。","#ffe8dd","#d98b68","今天有没有一刻，你突然像回到了自己？"],["正在路上","期待","你还在往前走，哪怕很慢。","#e4f0ff","#5d9ce3","你现在最想往哪个方向再走一步？"],["温柔结尾","温柔","30 天结束前，给自己一个轻轻的拥抱。","#dff2e7","#5aa879","30 天结束前，你想对自己说什么？"]
     ];
-
-    const MOODS = [
-      ["\u8f6f\u4e4e\u4e4e","\u50cf\u521a\u6652\u8fc7\u592a\u9633\u7684\u88ab\u5b50\uff0c\u60f3\u8d34\u8fd1\u4e00\u70b9\u3002","#ffe1eb"],
-      ["\u5f00\u5fc3\u6ce1\u6ce1","\u8f7b\u8f7b\u5f80\u4e0a\u5192\u7684\u5feb\u4e50\uff0c\u901a\u5e38\u5f88\u7b80\u5355\u3002","#fff4be"],
-      ["\u677e\u4e00\u53e3\u6c14","\u4e8b\u60c5\u6ca1\u90a3\u4e48\u53ef\u6015\u65f6\uff0c\u8eab\u4f53\u4f1a\u5148\u77e5\u9053\u3002","#dff2e7"],
-      ["\u5b89\u7a33","\u4e0d\u662f\u5f88\u6fc0\u52a8\uff0c\u4f46\u5f88\u9002\u5408\u5f85\u7740\u3002","#e4f0ff"],
-      ["\u597d\u5947","\u8111\u88fd\u5148\u63a2\u51fa\u4e00\u70b9\u70b9\uff0c\u60f3\u770b\u770b\u524d\u9762\u662f\u4ec0\u4e48\u3002","#efe7ff"],
-      ["\u671f\u5f85","\u8fd8\u6ca1\u53d1\u751f\uff0c\u4f46\u5fc3\u91cc\u5df2\u7ecf\u5f00\u59cb\u4eae\u4e86\u3002","#ffe8dd"],
-      ["\u611f\u52a8","\u88ab\u67d0\u53e5\u8bdd\u6216\u67d0\u4e2a\u7ec6\u8282\u8f7b\u8f7b\u78b0\u5230\u3002","#ffe1eb"],
-      ["\u6ee1\u8db3","\u4e8b\u60c5\u4e0d\u4e00\u5b9a\u5927\uff0c\u4f46\u521a\u597d\u5bf9\u4e0a\u4e86\u3002","#fff4be"],
-      ["\u5e73\u9759","\u98ce\u505c\u4e86\u4e00\u4e0b\uff0c\u5fc3\u4e5f\u8ddf\u7740\u6162\u4e0b\u6765\u3002","#dff2e7"],
-      ["\u75b2\u60eb","\u7535\u91cf\u504f\u4f4e\uff0c\u60f3\u628a\u52a8\u4f5c\u90fd\u653e\u6162\u3002","#e4f0ff"],
-      ["\u59d4\u5c48","\u4e0d\u662f\u5927\u98ce\u66b4\uff0c\u4f46\u5fc3\u91cc\u6709\u4e00\u70b9\u9178\u3002","#ffe1eb"],
-      ["\u70e6\u8877","\u50cf\u684c\u9762\u4e0a\u7684\u5c0f\u4e1c\u897f\u7a81\u7136\u90fd\u6324\u5728\u4e00\u8d77\u3002","#ffe8dd"],
-      ["\u96be\u8fc7","\u4eca\u5929\u53ef\u80fd\u6709\u70b9\u6c89\uff0c\u4f46\u5b83\u4ecd\u7136\u503c\u5f97\u88ab\u5199\u4e0b\u3002","#efe7ff"],
-      ["\u7126\u8651","\u8111\u5b50\u8dd1\u5f97\u6bd4\u8eab\u4f53\u5feb\uff0c\u505c\u4e0d\u4e0b\u6765\u3002","#fff4be"],
-      ["\u7a7a\u7a7a\u7684","\u4e0d\u662f\u574f\uff0c\u53ea\u662f\u6682\u65f6\u6ca1\u90a3\u4e48\u591a\u989c\u8272\u3002","#e4f0ff"],
-      ["\u65e0\u804a","\u65f6\u95f4\u6709\u70b9\u6162\uff0c\u60f3\u627e\u4e00\u70b9\u70b9\u65b0\u9c9c\u3002","#dff2e7"],
-      ["\u5bb3\u7f9e","\u8138\u9896\u5148\u70ed\u8d77\u6765\uff0c\u8bdd\u8fd8\u5728\u540e\u9762\u3002","#ffe8dd"],
-      ["\u9a84\u50b2","\u6709\u4e00\u4ef6\u4e8b\uff0c\u4f60\u771f\u7684\u505a\u5230\u4e86\u3002","#fff4be"],
-      ["\u8113\u5f31","\u5916\u58f3\u4eca\u5929\u8584\u4e00\u70b9\uff0c\u4f46\u8fd9\u4e0d\u4e11\u3002","#ffe1eb"],
-      ["\u5b64\u5355","\u4eba\u4e0d\u4e00\u5b9a\u5c11\uff0c\u5fc3\u91cc\u5374\u6709\u4e00\u70b9\u8fdc\u3002","#efe7ff"],
-      ["\u91ca\u7136","\u7ec8\u4e8e\u4e0d\u518d\u62d7\u5df4\u4e86\uff0c\u547c\u5438\u987a\u4e86\u4e9b\u3002","#dff2e7"],
-      ["\u88ab\u770b\u89c1","\u6709\u4eba\u6ce8\u610f\u5230\u4e86\u4f60\u771f\u5b9e\u7684\u6837\u5b50\u3002","#e4f0ff"],
-      ["\u60f3\u8eba\u5e73","\u4e0d\u662f\u653e\u5f03\uff0c\u662f\u60f3\u5148\u4f11\u606f\u4e00\u4e0b\u3002","#fff4be"],
-      ["\u6e29\u67d4","\u4eca\u5929\u6700\u9002\u5408\u8f7b\u58f0\u8bf4\u8bdd\uff0c\u4e5f\u8f7b\u58f0\u5bf9\u5f85\u81ea\u5df1\u3002","#ffe8dd"]
-    ];
-
-    const state = {
-      day: 1,
-      mood: 0
-    };
-
-    let els = {};
-
-    function safe(fn){ try { return fn(); } catch (e) { return null; } }
-    function key(name){ return "emotion-diary-" + name; }
-    function load(name, fallback=""){ return safe(() => localStorage.getItem(key(name))) ?? fallback; }
-    function save(name, value){ safe(() => localStorage.setItem(key(name), value)); }
-    function colorFor(accent){
-      return accent === "mint" ? "rgba(223,242,231,.95)" :
-        accent === "sky" ? "rgba(228,240,255,.95)" :
-        accent === "butter" ? "rgba(255,244,190,.95)" :
-        accent === "rose" ? "rgba(255,225,235,.95)" :
-        accent === "lilac" ? "rgba(239,231,255,.95)" : "rgba(255,232,221,.95)";
-    }
-
-    function build(){
-      document.title = T.appTitle;
-      els.eyebrow.textContent = T.eyebrow;
-      els.title.textContent = T.title;
-      els.lead.textContent = T.lead;
-      els.coverTitle.textContent = T.coverTitle;
-      els.coverDesc.textContent = T.coverDesc;
-      els.prevBtn.textContent = T.prev;
-      els.nextBtn.textContent = T.next;
-      els.todayBtn.textContent = T.today;
-      els.copySyncBtn.textContent = T.copySync;
-      els.loadSyncBtn.textContent = T.loadSync;
-      els.exportBtn.textContent = T.export;
-      els.importBtn.textContent = T.import;
-      els.statusLeft.textContent = T.statusLeft;
-      els.statusRight.textContent = T.statusRight;
-      els.pagesTitle.textContent = T.pagesTitle;
-      els.pagesDesc.textContent = T.pagesDesc;
-      els.emotionTitle.textContent = T.emotionTitle;
-      els.emotionDesc.textContent = T.emotionDesc;
-      els.moodPill.textContent = T.moodPrefix + MOODS[state.mood][0];
-      els.moodText.textContent = MOODS[state.mood][1];
-      els.currentHint.textContent = T.currentHintPrefix + DAYS[state.day - 1][1];
-      els.syncTitle.textContent = T.syncTitle;
-      els.syncDesc.textContent = T.syncDesc;
-      els.syncCode.placeholder = T.syncPlaceholder;
-      els.syncTip.textContent = T.syncTip;
-      els.backTop.textContent = T.backTop;
-
-      els.dayNav.innerHTML = "";
-      DAYS.forEach((d, i) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "daychip" + (i === 0 ? " active" : "");
-        b.dataset.day = String(i + 1);
-        b.innerHTML = `<span class="small">\u7b2c ${String(i + 1).padStart(2, "0")} \u5929</span><span class="big">${d[0]}</span>`;
-        b.addEventListener("click", () => focusDay(i + 1));
-        els.dayNav.appendChild(b);
-      });
-
-      els.pages.innerHTML = "";
-      DAYS.forEach((d, i) => {
-        const n = i + 1;
-        const page = document.createElement("article");
-        page.className = "page";
-        page.id = "day-" + n;
-        page.dataset.day = String(n);
-        page.innerHTML = `
-          <div class="page-inner">
-            <div class="page-top">
-              <div>
-                <span class="tag">DAY ${String(n).padStart(2, "0")}</span>
-                <h3>${d[0]}</h3>
-                <p class="sub">${d[1]} \u8fd9\u4e00\u5929\u4e0d\u7528\u5199\u5f97\u6574\u9f50\uff0c\u5199\u771f\u5b9e\u5c31\u591f\u4e86\u3002</p>
-              </div>
-              <div class="tag" style="background:${colorFor(d[2])};color:#171717">${i % 2 === 0 ? "\u7559\u767d\u5f88\u591a" : "\u6162\u6162\u5199"}</div>
-            </div>
-
-            <div class="grid">
-              <div class="block ${d[2]}">
-                <label class="label" for="what-${n}">\u4eca\u5929\u53d1\u751f\u4e86\u4ec0\u4e48</label>
-                <textarea id="what-${n}" data-save="what-${n}" placeholder="\u5199\u4e0b\u4eca\u5929\u771f\u6b63\u53d1\u751f\u7684\u4e09\u4e94\u4ef6\u4e8b\u3002\u53ef\u4ee5\u662f\u5f88\u5c0f\u7684\u4e8b\uff0c\u4e5f\u53ef\u4ee5\u662f\u5f88\u5927\u7684\u4e8b\u3002"></textarea>
-              </div>
-              <div class="block">
-                <label class="label" for="mood-${n}">\u73b0\u5728\u7684\u60c5\u7eea</label>
-                <textarea id="mood-${n}" class="short" data-save="mood-${n}" placeholder="\u4f8b\u5982\uff1a\u6709\u70b9\u7d2f\uff0c\u4f46\u6bd4\u65e9\u4e0a\u597d\u4e00\u70b9\u3002"></textarea>
-              </div>
-            </div>
-
-            <div class="grid">
-              <div class="block sky">
-                <label class="label" for="body-${n}">\u8eab\u4f53\u5728\u8bf4\u4ec0\u4e48</label>
-                <textarea id="body-${n}" class="short" data-save="body-${n}" placeholder="\u80f8\u53e3\u3001\u80a9\u8180\u3001\u80c3\u3001\u5934\uff0c\u54ea\u91cc\u6700\u6709\u611f\u89c9\uff1f"></textarea>
-              </div>
-              <div class="block mint">
-                <label class="label" for="need-${n}">\u6211\u771f\u6b63\u9700\u8981</label>
-                <textarea id="need-${n}" class="short" data-save="need-${n}" placeholder="\u4f11\u606f\u3001\u966a\u4f34\u3001\u5b89\u9759\u3001\u8fb9\u754c\u3001\u559d\u6c34\u3001\u51fa\u95e8\u8d70\u4e00\u8d70\u2026"></textarea>
-              </div>
-            </div>
-
-            <div class="grid">
-              <div class="block rose">
-                <label class="label" for="kind-${n}">\u5bf9\u81ea\u5df1\u8bf4\u4e00\u53e5</label>
-                <textarea id="kind-${n}" class="short" data-save="kind-${n}" placeholder="\u50cf\u5bf9\u670b\u53cb\u90a3\u6837\uff0c\u5bf9\u4eca\u5929\u7684\u81ea\u5df1\u8bf4\u8bdd\u3002"></textarea>
-              </div>
-              <div class="block butter">
-                <label class="label" for="tomorrow-${n}">\u660e\u5929\u7684\u5c0f\u52a8\u4f5c</label>
-                <textarea id="tomorrow-${n}" class="short" data-save="tomorrow-${n}" placeholder="\u4e00\u4ef6\u4e0d\u4f1a\u5413\u5230\u81ea\u5df1\u7684\u5c0f\u4e8b\u3002"></textarea>
-              </div>
-            </div>
-
-            <div class="mini">
-              <div class="panelx">
-                <strong>\u4eca\u5929\u6700\u4eae\u7684\u4e00\u70b9</strong>
-                <textarea class="short" data-save="bright-${n}" placeholder="\u4e00\u4e2a\u4eba\u3001\u4e00\u53e5\u8bdd\u3001\u4e00\u53e3\u70ed\u8336\uff0c\u90fd\u53ef\u4ee5\u3002"></textarea>
-              </div>
-              <div class="panelx">
-                <strong>\u4eca\u5929\u6700\u6c89\u7684\u4e00\u70b9</strong>
-                <textarea class="short" data-save="heavy-${n}" placeholder="\u5982\u679c\u60f3\u5199\uff0c\u4e5f\u53ef\u4ee5\u628a\u5b83\u5199\u51fa\u6765\u3002"></textarea>
-              </div>
-              <div class="panelx">
-                <strong>\u60f3\u4fdd\u7559\u7684\u753b\u9762</strong>
-                <textarea class="short" data-save="scene-${n}" placeholder="\u50cf\u628a\u4e00\u5c0f\u6bb5\u7535\u5f71\u80f6\u7247\u653e\u8fdb\u6765\u3002"></textarea>
-              </div>
-            </div>
-
-            <div class="block">
-              <label class="label">\u4eca\u5929\u53ef\u4ee5\u52fe\u9009\u7684\u8f7b\u52a8\u4f5c</label>
-              <div class="checks">
-                <label class="check"><input type="checkbox" data-save="check-${n}-1"><span>\u6211\u559d\u591f\u4e86\u6c34</span></label>
-                <label class="check"><input type="checkbox" data-save="check-${n}-2"><span>\u6211\u8ba4\u771f\u5403\u8fc7\u4e00\u987f\u996d</span></label>
-                <label class="check"><input type="checkbox" data-save="check-${n}-3"><span>\u6211\u6709\u4e3a\u81ea\u5df1\u505c\u4e0b\u6765\u51e0\u5206\u949f</span></label>
-              </div>
-            </div>
-          </div>`;
-        els.pages.appendChild(page);
-      });
-
-      els.emotionGrid.innerHTML = "";
-      MOODS.forEach((m, i) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "emotion";
-        b.dataset.index = String(i);
-        b.innerHTML = `<div class="top"><strong>${m[0]}</strong><span class="swatch" style="background:${m[2]}"></span></div><small>${m[1]}</small>`;
-        b.addEventListener("click", () => setMood(i));
-        els.emotionGrid.appendChild(b);
-      });
-    }
-
-    function setMood(index){
-      state.mood = index;
-      save("mood", String(index));
-      document.querySelectorAll(".emotion").forEach((n) => n.classList.toggle("active", Number(n.dataset.index) === index));
-      els.moodPill.textContent = T.moodPrefix + MOODS[index][0];
-      els.moodText.textContent = MOODS[index][1];
-    }
-
-    function setDay(day){
-      state.day = Math.min(Math.max(day, 1), DAYS.length);
-      save("day", String(state.day));
-      els.statusDay.textContent = "\u7b2c " + String(state.day).padStart(2, "0") + " \u5929";
-      els.currentTitle.textContent = "\u7b2c " + String(state.day).padStart(2, "0") + " \u5929 \u00b7 " + DAYS[state.day - 1][0];
-      els.currentHint.textContent = T.currentHintPrefix + DAYS[state.day - 1][1];
-      document.querySelectorAll(".daychip").forEach((n) => n.classList.toggle("active", Number(n.dataset.day) === state.day));
-    }
-
-    function focusDay(day){
-      setDay(day);
-      const el = document.getElementById("day-" + state.day);
-      if (el) el.scrollIntoView({behavior:"smooth", block:"start"});
-    }
-
-    function encodeState(){
-      const data = {
-        day: state.day,
-        mood: state.mood,
-        values: {}
-      };
-      document.querySelectorAll("[data-save]").forEach((node) => {
-        const keyName = node.dataset.save;
-        data.values[keyName] = node.type === "checkbox" ? node.checked : node.value;
-      });
-      return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-    }
-
-    function applyState(data){
-      if (!data || typeof data !== "object") return;
-      if (Number.isInteger(data.day)) state.day = data.day;
-      if (Number.isInteger(data.mood)) state.mood = data.mood;
-      if (data.values && typeof data.values === "object") {
-        document.querySelectorAll("[data-save]").forEach((node) => {
-          const v = data.values[node.dataset.save];
-          if (typeof v === "undefined") return;
-          if (node.type === "checkbox") node.checked = !!v;
-          else node.value = String(v);
-          save(node.dataset.save, node.type === "checkbox" ? (node.checked ? "1" : "0") : node.value);
-        });
-      }
-      save("day", String(state.day));
-      save("mood", String(state.mood));
-      setMood(state.mood);
-      setDay(state.day);
-    }
-
-    function loadAll(){
-      document.querySelectorAll("[data-save]").forEach((node) => {
-        const v = load(node.dataset.save, "");
-        if (node.type === "checkbox") {
-          node.checked = v === "1";
-          node.addEventListener("change", () => save(node.dataset.save, node.checked ? "1" : "0"));
-        } else {
-          node.value = v;
-          node.addEventListener("input", () => save(node.dataset.save, node.value));
-        }
-      });
-      const day = Number(load("day", "1"));
-      const mood = Number(load("mood", "0"));
-      setMood(Number.isFinite(mood) && mood >= 0 && mood < MOODS.length ? mood : 0);
-      setDay(Number.isFinite(day) && day >= 1 && day <= DAYS.length ? day : 1);
-    }
-
-    function bind(){
-      els.prevBtn.addEventListener("click", () => focusDay(state.day - 1));
-      els.nextBtn.addEventListener("click", () => focusDay(state.day + 1));
-      els.todayBtn.addEventListener("click", () => focusDay(1));
-      els.copySyncBtn.addEventListener("click", async () => {
-        const code = encodeState();
-        els.syncCode.value = code;
-        try { await navigator.clipboard.writeText(code); } catch (e) {}
-      });
-      els.loadSyncBtn.addEventListener("click", () => {
-        const text = els.syncCode.value.trim();
-        if (!text) return;
-        try {
-          const json = decodeURIComponent(escape(atob(text)));
-          applyState(JSON.parse(json));
-        } catch (e) {
-          alert("\u540c\u6b65\u7801\u4e0d\u80fd\u89e3\u6790\u3002");
-        }
-      });
-      els.exportBtn.addEventListener("click", () => {
-        const blob = new Blob([JSON.stringify(JSON.parse(decodeURIComponent(escape(atob(encodeState())))), null, 2)], {type:"application/json;charset=utf-8"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "emotion-diary-backup.json";
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 500);
-      });
-      els.importBtn.addEventListener("click", () => els.fileInput.click());
-      els.fileInput.addEventListener("change", async () => {
-        const file = els.fileInput.files && els.fileInput.files[0];
-        if (!file) return;
-        const text = await file.text();
-        try { applyState(JSON.parse(text)); } catch (e) { alert("\u5907\u4efd\u6587\u4ef6\u65e0\u6cd5\u8bfb\u53d6\u3002"); }
-      });
-      window.addEventListener("scroll", () => {
-        const pages = [...document.querySelectorAll(".page")];
-        let best = null;
-        for (const el of pages) {
-          const r = el.getBoundingClientRect();
-          const score = Math.max(0, Math.min(window.innerHeight, r.bottom) - Math.max(0, r.top));
-          if (!best || score > best.score) best = {el, score};
-        }
-        if (best) {
-          const day = Number(best.el.dataset.day || "1");
-          if (day !== state.day) setDay(day);
-        }
-      }, {passive:true});
-    }
-
-    els = {
-      eyebrow: document.getElementById("eyebrow"),
-      title: document.getElementById("title"),
-      lead: document.getElementById("lead"),
-      coverTitle: document.getElementById("coverTitle"),
-      coverDesc: document.getElementById("coverDesc"),
-      prevBtn: document.getElementById("prevBtn"),
-      nextBtn: document.getElementById("nextBtn"),
-      todayBtn: document.getElementById("todayBtn"),
-      copySyncBtn: document.getElementById("copySyncBtn"),
-      loadSyncBtn: document.getElementById("loadSyncBtn"),
-      exportBtn: document.getElementById("exportBtn"),
-      importBtn: document.getElementById("importBtn"),
-      statusLeft: document.getElementById("statusLeft"),
-      statusDay: document.getElementById("statusDay"),
-      statusRight: document.getElementById("statusRight"),
-      pagesTitle: document.getElementById("pagesTitle"),
-      pagesDesc: document.getElementById("pagesDesc"),
-      emotionTitle: document.getElementById("emotionTitle"),
-      emotionDesc: document.getElementById("emotionDesc"),
-      moodPill: document.getElementById("moodPill"),
-      moodText: document.getElementById("moodText"),
-      currentTitle: document.getElementById("currentTitle"),
-      currentHint: document.getElementById("currentHint"),
-      syncTitle: document.getElementById("syncTitle"),
-      syncDesc: document.getElementById("syncDesc"),
-      syncCode: document.getElementById("syncCode"),
-      fileInput: document.getElementById("fileInput"),
-      syncTip: document.getElementById("syncTip"),
-      backTop: document.getElementById("backTop"),
-      dayNav: document.getElementById("dayNav"),
-      pages: document.getElementById("pages"),
-      emotionGrid: document.getElementById("emotionGrid")
-    };
-
-    build();
-    bind();
-    loadAll();
-    setMood(state.mood);
-    setDay(state.day);
+    const textFields=[["events","今天发生了什么","写下三件真实发生的事。可以很小。","big"],["mood","情绪从哪里来","这个情绪可能和哪件事、哪句话、哪个念头有关？",""],["body","身体在说什么","肩膀、胸口、胃、头、呼吸，哪里最明显？",""],["need","我真正需要","休息、陪伴、边界、确认感、安静、行动……",""],["kind","对自己说一句","像对好朋友那样，对今天的自己说话。",""],["tomorrow","明天的小动作","一件不会吓到自己的小事。",""]];
+    const checks=["喝水","认真吃饭","晒太阳或看天空","走动 5 分钟","整理桌面一小角","少刷 10 分钟手机","说出一个真实需要","拒绝一件不想做的事","感谢自己一件事","早点睡一点","深呼吸 6 次","给明天留空白"];
+    const $=(id)=>document.getElementById(id);let day=Number(localStorage.getItem("diary-current-day")||1);
+    function k(name){return`diary-day-${day}-${name}`}function save(name,value){localStorage.setItem(k(name),value);$("saveState").textContent="已自动保存"}function load(name){return localStorage.getItem(k(name))||""}
+    function renderSelect(){$("daySelect").innerHTML=days.map((d,i)=>`<option value="${i+1}">第 ${String(i+1).padStart(2,"0")} 天 · ${d[0]}</option>`).join("")}
+    function renderFields(){const parts=[];parts.push('<div class="grid">');textFields.forEach((f,i)=>{if(i===2)parts.push('</div><div class="grid">');if(i===4)parts.push('</div><div class="grid">');parts.push(`<div class="field"><label for="${f[0]}">${f[1]}</label><textarea id="${f[0]}" class="${f[3]}" placeholder="${f[2]}"></textarea></div>`)});parts.push('</div>');parts.push('<div class="checks"><div class="check-title" style="grid-column:1/-1">今天可以勾选的小照顾</div>');checks.forEach((c,i)=>parts.push(`<label class="check"><input type="checkbox" id="check-${i}"><span>${c}</span></label>`));parts.push('</div>');$("fields").innerHTML=parts.join("");textFields.forEach(f=>{const el=$(f[0]);el.value=load(f[0]);el.addEventListener("input",()=>save(f[0],el.value))});checks.forEach((_,i)=>{const el=$(`check-${i}`);el.checked=load(`check-${i}`)==="1";el.addEventListener("change",()=>save(`check-${i}`,el.checked?"1":"0"))})}
+    function render(){day=Math.max(1,Math.min(30,day));localStorage.setItem("diary-current-day",String(day));const d=days[day-1];document.documentElement.style.setProperty("--progress",`${day/30*100}%`);$("emotionPicture").style.setProperty("--mood",d[3]);$("swatch").style.setProperty("--dot",d[4]);$("posterDay").textContent=`DAY ${String(day).padStart(2,"0")}`;$("emotionName").textContent=d[1];$("emotionDesc").textContent=d[2];$("formDay").textContent=`第 ${String(day).padStart(2,"0")} 天 · ${d[0]}`;$("formTitle").textContent="今天这样记录";$("formPrompt").textContent=d[5];$("leftPageNo").textContent=`${day*2-1}`;$("rightPageNo").textContent=`${day*2}`;$("daySelect").value=String(day);$("book").animate([{transform:"rotateY(-1deg)"},{transform:"rotateY(0)"}],{duration:260,easing:"ease-out"});renderFields()}
+    function collect(){const data={day,values:{}};for(let d=1;d<=30;d++){textFields.forEach(f=>data.values[`diary-day-${d}-${f[0]}`]=localStorage.getItem(`diary-day-${d}-${f[0]}`)||"");checks.forEach((_,i)=>data.values[`diary-day-${d}-check-${i}`]=localStorage.getItem(`diary-day-${d}-check-${i}`)||"")}return data}
+    function applyData(data){if(!data||!data.values)return;Object.keys(data.values).forEach(key=>localStorage.setItem(key,data.values[key]));day=Number(data.day||1);render()}function encode(data){return btoa(unescape(encodeURIComponent(JSON.stringify(data))))}function decode(code){return JSON.parse(decodeURIComponent(escape(atob(code))))}
+    $("prevBtn").addEventListener("click",()=>{day--;render()});$("nextBtn").addEventListener("click",()=>{day++;render()});$("daySelect").addEventListener("change",(e)=>{day=Number(e.target.value);render()});$("syncToggle").addEventListener("click",()=>$("syncPanel").classList.toggle("open"));
+    $("makeCode").addEventListener("click",async()=>{const code=encode(collect());$("syncCode").value=code;try{await navigator.clipboard.writeText(code);$("saveState").textContent="同步码已复制"}catch(e){}});
+    $("readCode").addEventListener("click",()=>{try{applyData(decode($("syncCode").value.trim()));$("saveState").textContent="同步码已读取"}catch(e){alert("同步码无法读取，请确认是否复制完整。")}});
+    $("exportJson").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(collect(),null,2)],{type:"application/json;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="emotion-diary-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});
+    $("importJson").addEventListener("click",()=>$("fileInput").click());$("fileInput").addEventListener("change",async(e)=>{const file=e.target.files[0];if(!file)return;try{applyData(JSON.parse(await file.text()));$("saveState").textContent="备份已导入"}catch(err){alert("备份文件无法读取。")}});
+    renderSelect();render();
   </script>
 </body>
 </html>
